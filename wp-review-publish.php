@@ -9,9 +9,40 @@ Author URI: https://github.com/boutros
 License: GPLv2
 */
 
+add_action( 'init', 'create_bookreview_type' );
 register_activation_hook( __FILE__, 'set_missing_key');
 add_action( 'admin_init', 'deichman_admin_init' );
 add_action( 'admin_menu', 'deichman_settings_menu' );
+
+function create_bookreview_type() {
+	register_post_type( 'book_reviews',
+		array(
+			'labels' => array(
+				'name' => 'Bokanbefalinger',
+				'singular_name' => 'Bokanbefaling',
+				'add_new' => 'Legg til',
+				'add_new_item' => 'Skriv bokanbefaling',
+				'edit' => 'Rediger',
+				'edit_item' => 'Rediger bokanbefaling',
+				'new_item' => 'Ny bokanbefaling',
+				'view' => 'Vis',
+				'view_item' => 'Vis bokanbefaling',
+				'search_items' => 'Søk i bokanbefalinger',
+				'not_found' => 'Fant ingen bokanbefalinger',
+				'not_found_in_trash' => 'Ingen bokanbefalinger i søppelbøtta',
+				'parent' => 'Overordnet bokanbefaling'
+			),
+			'public' => true,
+			'menu_position' => 20,
+			'supports' =>
+				array( 'title', 'editor', 'comments',
+					'thumbnail', 'custom-fields' ),
+			'taxonomies' => array( '' ),
+			'has_archive' => true
+			)
+		);
+
+}
 
 function set_missing_key() {
 	if ( get_option( 'deichman_api_key') == false) {
