@@ -34,9 +34,8 @@ function process_deichman_options() {
 		update_option ( 'deichman_api_key', $key );
 	}
 
-	wp_redirect ( add_query_arg ( array( 'page' => 'wp-review-publish',
-										 'message' => '1' ) ,
-								 admin_url( 'options-general.php' ) ) );
+	wp_redirect ( add_query_arg ( array( 'page' => 'wp-review-publish', 'message' => '1' ),
+		            admin_url( 'options-general.php' ) ) );
 	exit;
 }
 
@@ -62,7 +61,7 @@ function wp_review_publish_config_page() {
 			<?php wp_nonce_field( 'deichman' ); ?>
 			API-nøkkel: <input type="text" name="deichman_api_key" value="<?php echo $key; ?>"/>
 			<br />
-			<input type="submit" value="Lagre" 	class="button-primary"/>
+			<input type="submit" value="Lagre" class="button-primary"/>
 		</form>
 	</div>
 <?php
