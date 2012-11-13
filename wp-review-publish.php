@@ -13,6 +13,7 @@ add_action( 'init', 'create_bookreview_type' );
 register_activation_hook( __FILE__, 'set_missing_key');
 add_action( 'admin_init', 'deichman_admin_init' );
 add_action( 'admin_menu', 'deichman_settings_menu' );
+add_action( 'save_post', 'add_book_review_fields', 10, 2 );
 
 function create_bookreview_type() {
 	register_post_type( 'book_reviews',
@@ -35,8 +36,7 @@ function create_bookreview_type() {
 			'public' => true,
 			'menu_position' => 20,
 			'supports' =>
-				array( 'title', 'editor', 'comments',
-					'thumbnail', 'custom-fields' ),
+				array( 'title', 'editor', 'comments','thumbnail'),
 			'taxonomies' => array( '' ),
 			'has_archive' => true
 			)
@@ -52,7 +52,57 @@ function set_missing_key() {
 
 function deichman_admin_init() {
 	add_action( 'admin_post_save_deichman_options', 'process_deichman_options');
+	add_meta_box ( 'book_reviews_metadata',
+								 'Metadata',
+								 'display_bookreview_metadata_box',
+								 'book_reviews', 'normal', 'high');
 }
+
+function display_bookreview_metadata_box ( $book_review ) {
+	$book_author = esc_html( get_post_meta( $book_review->ID,
+																     'book_author', true ) );
+	$book_title = esc_html( get_post_meta( $book_review->ID,
+																     'book_title', true ) );
+	$book_isbn = esc_html( get_post_meta( $book_review->ID,
+																     'book_isbn', true ) );
+	?>
+	<table>
+		<tr>
+			<td style="width: 100%">Forfatter</td>
+			<td><input type="text" size="80" name="book_review_author_name"
+				value="<?php echo $book_author; ?>" /></td>
+		</tr>
+		<tr>
+			<td style="width: 100%">Tittel på boka</td>
+			<td><input type="text" size="80" name="book_review_book_title"
+				value="<?php echo $book_title; ?>" /></td>
+		</tr>
+		<tr>
+			<td style="width: 100%">ISBN</td>
+			<td><input type="text" size="80" name="book_review_book_isbn"
+				value="<?php echo $book_isbn; ?>" /></td>
+		</tr>
+
+	</table>
+<?php
+}
+
+function add_book_review_fields( $book_review_id, $book_review ) {
+	// Check post type for book reviews
+	if ( $book_review->post_type == 'book_reviews' ) {
+		// Store data in post meta table if present in post data
+		if ( isset( $_POST['book_review_author_name'] ) && $_POST['book_review_author_name'] != '' ) {
+			update_post_meta( $book_review_id, 'book_author', $_POST['book_review_author_name'] );
+		}
+		if ( isset( $_POST['book_review_book_title'] ) && $_POST['book_review_book_title'] != '' ) {
+			update_post_meta( $book_review_id, 'book_title', $_POST['book_review_book_title'] );
+		}
+		if ( isset( $_POST['book_review_book_isbn'] ) && $_POST['book_review_book_isbn'] != '' ) {
+			update_post_meta( $book_review_id, 'book_isbn', $_POST['book_review_book_isbn'] );
+		}
+	}
+}
+
 
 function process_deichman_options() {
 	if ( !current_user_can( 'manage_options') )
