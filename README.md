@@ -1,4 +1,5 @@
-# Wordpress plugin for å publisere bokanbefalinger mot Deichmans RDF-store
+# wp-review-publish
+Wordpress plugin for å publisere bokanbefalinger mot Deichmans RDF-store
 
 ## Hva
 Pluginet skal gjøre det enkelt for bloggende biblioteker å kunne publisere anbefalinger direkte fra sine Wordpress-blogger til Deichmans RDF-store.
