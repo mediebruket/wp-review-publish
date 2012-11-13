@@ -60,12 +60,9 @@ function deichman_admin_init() {
 }
 
 function display_bookreview_metadata_box ( $book_review ) {
-	$book_author = esc_html( get_post_meta( $book_review->ID,
-																     'book_author', true ) );
-	$book_title = esc_html( get_post_meta( $book_review->ID,
-																     'book_title', true ) );
-	$book_isbn = esc_html( get_post_meta( $book_review->ID,
-																     'book_isbn', true ) );
+	$book_author = esc_html( get_post_meta( $book_review->ID, 'book_author', true ) );
+	$book_title = esc_html( get_post_meta( $book_review->ID, 'book_title', true ) );
+	$book_isbn = esc_html( get_post_meta( $book_review->ID, 'book_isbn', true ) );
 	?>
 	<table>
 		<tr>
