@@ -14,6 +14,7 @@ register_activation_hook( __FILE__, 'set_missing_key');
 add_action( 'admin_init', 'deichman_admin_init' );
 add_action( 'admin_menu', 'deichman_settings_menu' );
 add_action( 'save_post', 'add_book_review_fields', 10, 2 );
+add_filter( 'pre_get_posts', 'show_book_reviews_as_posts');
 
 function create_bookreview_type() {
 	register_post_type( 'book_reviews',
@@ -148,4 +149,9 @@ function wp_review_publish_config_page() {
 <?php
 }
 
+function show_book_reviews_as_posts ( $query ) {
+	if ( is_home() && $query->is_main_query() )
+		$query->set ( 'post_type', array( 'post', 'book_reviews'));
+	return $query;
+}
 ?>
