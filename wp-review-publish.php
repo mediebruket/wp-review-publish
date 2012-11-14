@@ -10,7 +10,6 @@ License: GPLv2
 */
 
 add_action( 'init', 'create_bookreview_type' );
-register_activation_hook( __FILE__, 'set_missing_key');
 add_action( 'admin_init', 'book_reviews_admin_init' );
 add_action( 'admin_menu', 'book_reviews_settings_menu' );
 add_action( 'save_post', 'add_book_review_fields', 10, 2 );
@@ -43,12 +42,6 @@ function create_bookreview_type() {
 			)
 		);
 
-}
-
-function set_missing_key() {
-	if ( get_option( 'deichman_api_key') == false) {
-		add_option ( 'deichman_api_key', 'kontakt Deichmanske bibliotek for API-nøkkel');
-	}
 }
 
 function book_reviews_admin_init() {
