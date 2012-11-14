@@ -128,7 +128,7 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 		"title" => $book_review->post_title,
 		"text"  => $book_review->post_content,
 		"teaser" => get_post_meta( $book_review_id, 'review_teaser', true ),
-		"api_key" => "test"//get_option( 'deichman_api_key')
+		"api_key" => get_option( 'deichman_api_key' )
 		);
 	$uri = get_post_meta( $book_review_id, 'review_uri', true );
 
