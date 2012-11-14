@@ -124,21 +124,21 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 	// Check if all parameters are present:
 	// required: text, teaser, author, (review)title,
 	// optional: audience, reviewer
-	$args["body"] = array (
-		"isbn" => get_post_meta( $book_review_id, 'book_review_book_isbn', true ),
+	$body = array (
 		"title" => $book_review->post_title,
 		"text"  => $book_review->post_content,
-		"teaser" => get_post_meta( $book_review_id, 'book_review_teaser', true ),
-		"api_key" => get_option( 'deichman_api_key')
+		"isbn" => get_post_meta( $book_review_id, 'book_isbn', true ),
+		"teaser" => get_post_meta( $book_review_id, 'review_teaser', true ),
+		"api_key" => "test"//get_option( 'deichman_api_key')
 		);
-
 	$uri = get_post_meta( $book_review_id, 'review_uri', true );
 
 	// If review is published not before
 	if ( empty($uri) ) {
-		$args['method'] = 'POST';
 		// perform POST
-		$result = $request->request( $url, $args );
+		$body = json_encode( $body );
+		$result = $request->request( $url,
+		                             array( 'method' => 'POST', 'body' => $body ) );
 		$json = json_decode( $result["body"], true );
 		print_r( $json );
 		die();
@@ -149,10 +149,11 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 
 	// else if review is updating an allready published review
 	} else {
-		$args["body"]['uri'] = $uri;
-		$args['method'] = 'PUT';
+		$body["uri"] = $uri;
 		// perform PUT
-		$result = $request->request( $url , $args );
+		$body = json_encode( $body );
+		$result = $request->request( $url,
+		                             array( 'method' => 'PUT', 'body' => $body ) );
 		$json = json_decode( $result["body"], true );
 		print_r( $json );
 		die();
