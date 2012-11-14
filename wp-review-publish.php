@@ -104,26 +104,27 @@ function display_book_review_metadata_box ( $book_review ) {
 
 function process_book_review_fields( $book_review_id, $book_review ) {
 	// Check post type for book reviews
-	if ( $book_review->post_type == 'book_reviews' ) {
-		// Store data in meta table if present in post data
-		if ( isset( $_POST['book_review_author_name'] ) && $_POST['book_review_author_name'] != '' ) {
-			update_post_meta( $book_review_id, 'book_author', $_POST['book_review_author_name'] );
-		}
-		if ( isset( $_POST['book_review_book_title'] ) && $_POST['book_review_book_title'] != '' ) {
-			update_post_meta( $book_review_id, 'book_title', $_POST['book_review_book_title'] );
-		}
-		if ( isset( $_POST['book_review_book_isbn'] ) && $_POST['book_review_book_isbn'] != '' ) {
-			update_post_meta( $book_review_id, 'book_isbn', $_POST['book_review_book_isbn'] );
-		}
-		if ( isset( $_POST['review_teaser'] ) && $_POST['review_teaser'] != '' ) {
-			update_post_meta( $book_review_id, 'review_teaser', $_POST['review_teaser'] );
-		}
-		if ( isset( $_POST['review_audience'] ) && $_POST['review_audience'] != '' ) {
-			update_post_meta( $book_review_id, 'review_audience', $_POST['review_audience'] );
-		}
-		if ( isset( $_POST['review_reviewer'] ) && $_POST['review_reviewer'] != '' ) {
-			update_post_meta( $book_review_id, 'review_reviewer', $_POST['review_reviewer'] );
-		}
+	if ( $book_review->post_type != 'book_reviews' )
+		return;
+
+	// Store data in meta table if present in post data
+	if ( isset( $_POST['book_review_author_name'] ) && $_POST['book_review_author_name'] != '' ) {
+		update_post_meta( $book_review_id, 'book_author', $_POST['book_review_author_name'] );
+	}
+	if ( isset( $_POST['book_review_book_title'] ) && $_POST['book_review_book_title'] != '' ) {
+		update_post_meta( $book_review_id, 'book_title', $_POST['book_review_book_title'] );
+	}
+	if ( isset( $_POST['book_review_book_isbn'] ) && $_POST['book_review_book_isbn'] != '' ) {
+		update_post_meta( $book_review_id, 'book_isbn', $_POST['book_review_book_isbn'] );
+	}
+	if ( isset( $_POST['review_teaser'] ) && $_POST['review_teaser'] != '' ) {
+		update_post_meta( $book_review_id, 'review_teaser', $_POST['review_teaser'] );
+	}
+	if ( isset( $_POST['review_audience'] ) && $_POST['review_audience'] != '' ) {
+		update_post_meta( $book_review_id, 'review_audience', $_POST['review_audience'] );
+	}
+	if ( isset( $_POST['review_reviewer'] ) && $_POST['review_reviewer'] != '' ) {
+		update_post_meta( $book_review_id, 'review_reviewer', $_POST['review_reviewer'] );
 	}
 }
 
