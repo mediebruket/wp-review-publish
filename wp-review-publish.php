@@ -56,24 +56,48 @@ function display_book_review_metadata_box ( $book_review ) {
 	$book_author = esc_html( get_post_meta( $book_review->ID, 'book_author', true ) );
 	$book_title = esc_html( get_post_meta( $book_review->ID, 'book_title', true ) );
 	$book_isbn = esc_html( get_post_meta( $book_review->ID, 'book_isbn', true ) );
+	$review_teaser = esc_html( get_post_meta( $book_review->ID, 'review_teaser', true ) );
+	$review_audience = esc_html( get_post_meta( $book_review->ID, 'review_audience', true ) );
+	$review_reviewer = esc_html( get_post_meta( $book_review->ID, 'review_reviewer', true ) );
 	?>
+	<p>Felt merket * er obligatoriske</p>
 	<table>
 		<tr>
-			<td style="width: 100%">Forfatter</td>
+			<td style="width: 100%">Forfatter*</td>
 			<td><input type="text" size="80" name="book_review_author_name"
 				value="<?php echo $book_author; ?>" /></td>
 		</tr>
 		<tr>
-			<td style="width: 100%">Tittel på boka</td>
+			<td style="width: 100%">Tittel på boka*</td>
 			<td><input type="text" size="80" name="book_review_book_title"
 				value="<?php echo $book_title; ?>" /></td>
 		</tr>
 		<tr>
-			<td style="width: 100%">ISBN</td>
+			<td style="width: 100%">ISBN*</td>
 			<td><input type="text" size="80" name="book_review_book_isbn"
 				value="<?php echo $book_isbn; ?>" /></td>
 		</tr>
-
+		<tr>
+			<td style="width: 100%">Teaser*</td>
+			<td>
+				<textarea  name="review_teaser" rows="5" cols="79"><?php echo $review_teaser; ?></textarea>
+			</td>
+		</tr>
+		<tr>
+			<td style="width: 100%">Målgruppe (for anbefalingen)</td>
+			<td>
+				<select name="review_audience">
+						<option value="0" ></option>
+						<option value="1" <?php if ( $review_audience == 1 ) echo 'selected="selected"'; ?>>Voksne</option>
+						<option value="2" <?php if ( $review_audience == 2 ) echo 'selected="selected"'; ?>>Barn/Ungdom</option>
+					</select>
+			</td>
+		</tr>
+		<tr>
+			<td style="width: 100%">Anmelder</td>
+			<td><input type="text" size="80" name="review_reviewer"
+				value="<?php echo $review_reviewer; ?>" /></td>
+		</tr>
 	</table>
 <?php
 }
@@ -90,6 +114,15 @@ function add_book_review_fields( $book_review_id, $book_review ) {
 		}
 		if ( isset( $_POST['book_review_book_isbn'] ) && $_POST['book_review_book_isbn'] != '' ) {
 			update_post_meta( $book_review_id, 'book_isbn', $_POST['book_review_book_isbn'] );
+		}
+		if ( isset( $_POST['review_teaser'] ) && $_POST['review_teaser'] != '' ) {
+			update_post_meta( $book_review_id, 'review_teaser', $_POST['review_teaser'] );
+		}
+		if ( isset( $_POST['review_audience'] ) && $_POST['review_audience'] != '' ) {
+			update_post_meta( $book_review_id, 'review_audience', $_POST['review_audience'] );
+		}
+		if ( isset( $_POST['review_reviewer'] ) && $_POST['review_reviewer'] != '' ) {
+			update_post_meta( $book_review_id, 'review_reviewer', $_POST['review_reviewer'] );
 		}
 	}
 }
