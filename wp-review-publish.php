@@ -127,7 +127,6 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 	$body = array (
 		"title" => $book_review->post_title,
 		"text"  => $book_review->post_content,
-		"isbn" => get_post_meta( $book_review_id, 'book_isbn', true ),
 		"teaser" => get_post_meta( $book_review_id, 'review_teaser', true ),
 		"api_key" => "test"//get_option( 'deichman_api_key')
 		);
@@ -136,12 +135,11 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 	// If review is published not before
 	if ( empty($uri) ) {
 		// perform POST
+		$body["isbn"] = get_post_meta( $book_review_id, 'book_isbn', true );
 		$body = json_encode( $body );
 		$result = $request->request( $url,
 		                             array( 'method' => 'POST', 'body' => $body ) );
 		$json = json_decode( $result["body"], true );
-		print_r( $json );
-		die();
 
 		// If success, save uri to review metadata
 		if ( $json["work"]["reviews"]["review_id"] != "" )
@@ -154,9 +152,6 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 		$body = json_encode( $body );
 		$result = $request->request( $url,
 		                             array( 'method' => 'PUT', 'body' => $body ) );
-		$json = json_decode( $result["body"], true );
-		print_r( $json );
-		die();
 	}
 
 }
