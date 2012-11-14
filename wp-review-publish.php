@@ -119,32 +119,50 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 	}
 	$request = new WP_Http;
 	$args = array();
+	$url = 'http://datatest.deichman.no/api/reviews';
 
 	// Check if all parameters are present:
 	// required: text, teaser, author, (review)title,
 	// optional: audience, reviewer
-	$args["title"] =
+	$args["body"] = array (
+		"isbn" => get_post_meta( $book_review_id, 'book_review_book_isbn', true ),
+		"title" => $book_review->post_title,
+		"text"  => $book_review->post_content,
+		"teaser" => get_post_meta( $book_review_id, 'book_review_teaser', true ),
+		"api_key" => get_option( 'deichman_api_key')
+		);
+
+	$uri = get_post_meta( $book_review_id, 'review_uri', true );
 
 	// If review is published not before
-	if ( !isset( get_post_meta( $book_review->ID, 'review_uri', true ) )) {
+	if ( empty($uri) ) {
 		$args['method'] = 'POST';
 		// perform POST
-		$result = $request->request( 'http://datatest.deichman.no' , $args );
-		// If success, save uri to metadata review_uri
+		$result = $request->request( $url, $args );
+		$json = json_decode( $result["body"], true );
+		print_r( $json );
+		die();
+
+		// If success, save uri to review metadata
+		if ( $json["work"]["reviews"]["review_id"] != "" )
+			update_post_meta( $book_review_id, 'review_uri', $json["work"]["reviews"]["review_id"] );
 
 	// else if review is updating an allready published review
 	} else {
+		$args["body"]['uri'] = $uri;
 		$args['method'] = 'PUT';
-
 		// perform PUT
-		$result = $request->request( 'http://datatest.deichman.no' , $args );
+		$result = $request->request( $url , $args );
+		$json = json_decode( $result["body"], true );
+		print_r( $json );
+		die();
 	}
 
 }
 
-function process_book_reviews_options() {
+function save_book_reviews_options() {
 	if ( !current_user_can( 'manage_options') )
-		wp_die( 'Mangler rettigheter');
+		wp_die( 'Mangler rettigheter' );
 
 	check_admin_referer( 'deichman' );
 
@@ -176,7 +194,7 @@ function book_reviews_config_page() {
 		<?php } ?>
 
 		<form method="post" action="admin-post.php">
-			<input type="hidden" name="action" value="save_book_review_options" />
+			<input type="hidden" name="action" value="save_book_reviews_options" />
 			<?php wp_nonce_field( 'deichman' ); ?>
 			API-nøkkel: <input type="text" name="deichman_api_key" value="<?php echo $key; ?>"/>
 			<input type="submit" value="Lagre" class="button-primary"/>
