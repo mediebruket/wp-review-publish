@@ -21,7 +21,7 @@ function create_bookreview_type() {
 			'labels' => array(
 				'name' => 'Bokanbefalinger',
 				'singular_name' => 'Bokanbefaling',
-				'add_new' => 'Legg til',
+				'add_new' => 'Skriv ny',
 				'add_new_item' => 'Skriv bokanbefaling',
 				'edit' => 'Rediger',
 				'edit_item' => 'Rediger bokanbefaling',
@@ -30,7 +30,7 @@ function create_bookreview_type() {
 				'view_item' => 'Vis bokanbefaling',
 				'search_items' => 'Søk i bokanbefalinger',
 				'not_found' => 'Fant ingen bokanbefalinger',
-				'not_found_in_trash' => 'Ingen bokanbefalinger i søppelbøtta',
+				'not_found_in_trash' => 'Ingen bokanbefalinger i søppelkurven',
 				'parent' => 'Overordnet bokanbefaling'
 			),
 			'public' => true,
