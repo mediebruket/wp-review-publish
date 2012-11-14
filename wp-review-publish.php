@@ -11,8 +11,8 @@ License: GPLv2
 
 add_action( 'init', 'create_bookreview_type' );
 register_activation_hook( __FILE__, 'set_missing_key');
-add_action( 'admin_init', 'deichman_admin_init' );
-add_action( 'admin_menu', 'deichman_settings_menu' );
+add_action( 'admin_init', 'book_reviews_admin_init' );
+add_action( 'admin_menu', 'book_reviews_settings_menu' );
 add_action( 'save_post', 'add_book_review_fields', 10, 2 );
 add_filter( 'pre_get_posts', 'show_book_reviews_as_posts');
 
@@ -51,15 +51,15 @@ function set_missing_key() {
 	}
 }
 
-function deichman_admin_init() {
-	add_action( 'admin_post_save_deichman_options', 'process_deichman_options');
+function book_reviews_admin_init() {
+	add_action( 'admin_post_save_deichman_options', 'process_book_reviews_options');
 	add_meta_box ( 'book_reviews_metadata',
 								 'Metadata',
-								 'display_bookreview_metadata_box',
+								 'display_book_review_metadata_box',
 								 'book_reviews', 'normal', 'high');
 }
 
-function display_bookreview_metadata_box ( $book_review ) {
+function display_book_review_metadata_box ( $book_review ) {
 	$book_author = esc_html( get_post_meta( $book_review->ID, 'book_author', true ) );
 	$book_title = esc_html( get_post_meta( $book_review->ID, 'book_title', true ) );
 	$book_isbn = esc_html( get_post_meta( $book_review->ID, 'book_isbn', true ) );
@@ -88,7 +88,7 @@ function display_bookreview_metadata_box ( $book_review ) {
 function add_book_review_fields( $book_review_id, $book_review ) {
 	// Check post type for book reviews
 	if ( $book_review->post_type == 'book_reviews' ) {
-		// Store data in post meta table if present in post data
+		// Store data in meta table if present in post data
 		if ( isset( $_POST['book_review_author_name'] ) && $_POST['book_review_author_name'] != '' ) {
 			update_post_meta( $book_review_id, 'book_author', $_POST['book_review_author_name'] );
 		}
@@ -102,7 +102,7 @@ function add_book_review_fields( $book_review_id, $book_review ) {
 }
 
 
-function process_deichman_options() {
+function process_book_reviews_options() {
 	if ( !current_user_can( 'manage_options') )
 		wp_die( 'Mangler rettigheter');
 
@@ -118,13 +118,13 @@ function process_deichman_options() {
 	exit;
 }
 
-function deichman_settings_menu() {
-	add_options_page( 'Data.deichman.no konfigurasjon',
-	 				  'data.deichman.no', 'manage_options',
-	 				  'wp-review-publish', 'wp_review_publish_config_page');
+function book_reviews_settings_menu() {
+	add_options_page( 'Bokanbefalinger konfigurasjon',
+	 				  'Bokanbefalinger', 'manage_options',
+	 				  'wp-review-publish', 'book_reviews_config_page');
 }
 
-function wp_review_publish_config_page() {
+function book_reviews_config_page() {
 	$key = get_option( 'deichman_api_key' );
 	?>
 	<div id="deichman-general" class="wrap">
@@ -136,7 +136,7 @@ function wp_review_publish_config_page() {
 		<?php } ?>
 
 		<form method="post" action="admin-post.php">
-			<input type="hidden" name="action" value="save_deichman_options" />
+			<input type="hidden" name="action" value="save_book_review_options" />
 			<?php wp_nonce_field( 'deichman' ); ?>
 			API-nøkkel: <input type="text" name="deichman_api_key" value="<?php echo $key; ?>"/>
 			<br />
