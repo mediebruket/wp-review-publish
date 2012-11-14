@@ -121,7 +121,7 @@ function book_reviews_config_page() {
 	$key = get_option( 'deichman_api_key' );
 	?>
 	<div id="deichman-general" class="wrap">
-		<h2>data.deichman.no API-nøkkel</h2>
+		<h2>Bokanbefalinger konfigurasjon</h2>
 
 		<?php if ( isset( $_GET['message'] )
 		&& $_GET['message'] == '1' ) { ?>
@@ -132,9 +132,9 @@ function book_reviews_config_page() {
 			<input type="hidden" name="action" value="save_book_review_options" />
 			<?php wp_nonce_field( 'deichman' ); ?>
 			API-nøkkel: <input type="text" name="deichman_api_key" value="<?php echo $key; ?>"/>
-			<br />
 			<input type="submit" value="Lagre" class="button-primary"/>
 		</form>
+		<p>Har du ikke API-nøkkel, får du denne ved å kontakte Deichmanske bibliotek</p>
 	</div>
 <?php
 }
