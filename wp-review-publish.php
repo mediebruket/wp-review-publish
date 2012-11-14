@@ -117,6 +117,34 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 	if ( isset( $_POST['review_reviewer'] ) && $_POST['review_reviewer'] != '' ) {
 		update_post_meta( $book_review_id, 'review_reviewer', $_POST['review_reviewer'] );
 	}
+
+	// set up HTTP request for push data.deichman.no
+	if( !class_exists( 'WP_Http' ) ) {
+		include_once( ABSPATH . WPINC. '/class-http.php' );
+	}
+	$request = new WP_Http;
+	$args = array();
+
+	// Check if all parameters are present:
+	// required: text, teaser, author, (review)title,
+	// optional: audience, reviewer
+	$args["title"] =
+
+	// If review is published not before
+	if ( !isset( get_post_meta( $book_review->ID, 'review_uri', true ) )) {
+		$args['method'] = 'POST';
+		// perform POST
+		$result = $request->request( 'http://datatest.deichman.no' , $args );
+		// If success, save uri to metadata review_uri
+
+	// else if review is updating an allready published review
+	} else {
+		$args['method'] = 'PUT';
+
+		// perform PUT
+		$result = $request->request( 'http://datatest.deichman.no' , $args );
+	}
+
 }
 
 function process_book_reviews_options() {
