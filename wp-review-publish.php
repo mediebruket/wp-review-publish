@@ -12,7 +12,7 @@ License: GPLv2
 add_action( 'init', 'create_bookreview_type' );
 add_action( 'admin_init', 'book_reviews_admin_init' );
 add_action( 'admin_menu', 'book_reviews_settings_menu' );
-add_action( 'save_post', 'add_book_review_fields', 10, 2 );
+add_action( 'save_post', 'process_book_review_fields', 10, 2 );
 add_filter( 'pre_get_posts', 'show_book_reviews_as_posts');
 
 function create_bookreview_type() {
@@ -102,7 +102,7 @@ function display_book_review_metadata_box ( $book_review ) {
 <?php
 }
 
-function add_book_review_fields( $book_review_id, $book_review ) {
+function process_book_review_fields( $book_review_id, $book_review ) {
 	// Check post type for book reviews
 	if ( $book_review->post_type == 'book_reviews' ) {
 		// Store data in meta table if present in post data
@@ -126,7 +126,6 @@ function add_book_review_fields( $book_review_id, $book_review ) {
 		}
 	}
 }
-
 
 function process_book_reviews_options() {
 	if ( !current_user_can( 'manage_options') )
