@@ -54,7 +54,6 @@ function book_reviews_admin_init() {
 
 function display_book_review_metadata_box ( $book_review ) {
 	$book_author = esc_html( get_post_meta( $book_review->ID, 'book_author', true ) );
-	$book_title = esc_html( get_post_meta( $book_review->ID, 'book_title', true ) );
 	$book_isbn = esc_html( get_post_meta( $book_review->ID, 'book_isbn', true ) );
 	$review_teaser = esc_html( get_post_meta( $book_review->ID, 'review_teaser', true ) );
 	$review_audience = esc_html( get_post_meta( $book_review->ID, 'review_audience', true ) );
@@ -66,11 +65,6 @@ function display_book_review_metadata_box ( $book_review ) {
 			<td style="width: 100%">Forfatter*</td>
 			<td><input type="text" size="80" name="book_review_author_name"
 				value="<?php echo $book_author; ?>" /></td>
-		</tr>
-		<tr>
-			<td style="width: 100%">Tittel på boka*</td>
-			<td><input type="text" size="80" name="book_review_book_title"
-				value="<?php echo $book_title; ?>" /></td>
 		</tr>
 		<tr>
 			<td style="width: 100%">ISBN*</td>
@@ -110,9 +104,6 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 	// Store data in meta table if present in post data
 	if ( isset( $_POST['book_review_author_name'] ) && $_POST['book_review_author_name'] != '' ) {
 		update_post_meta( $book_review_id, 'book_author', $_POST['book_review_author_name'] );
-	}
-	if ( isset( $_POST['book_review_book_title'] ) && $_POST['book_review_book_title'] != '' ) {
-		update_post_meta( $book_review_id, 'book_title', $_POST['book_review_book_title'] );
 	}
 	if ( isset( $_POST['book_review_book_isbn'] ) && $_POST['book_review_book_isbn'] != '' ) {
 		update_post_meta( $book_review_id, 'book_isbn', $_POST['book_review_book_isbn'] );
