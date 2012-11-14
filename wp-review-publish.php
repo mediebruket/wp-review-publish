@@ -45,7 +45,11 @@ function create_bookreview_type() {
 }
 
 function book_reviews_admin_init() {
-	add_action( 'admin_post_save_deichman_options', 'process_book_reviews_options');
+	if ( get_option( 'deichman_api_key') == false) {
+		add_option( 'deichman_api_key');
+	}
+
+	add_action( 'admin_post_save_book_reviews_options', 'save_book_reviews_options');
 	add_meta_box ( 'book_reviews_metadata',
 								 'Metadata',
 								 'display_book_review_metadata_box',
