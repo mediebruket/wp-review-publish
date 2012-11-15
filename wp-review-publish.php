@@ -16,6 +16,19 @@ add_action( 'save_post', 'process_book_review_fields', 10, 2 );
 add_filter( 'pre_get_posts', 'show_book_reviews_as_posts');
 add_action( 'before_delete_post', 'push_delete' );
 add_action( 'untrash_post', 'remove_uri');
+add_action( 'admin_notices', 'my_admin_notices' );
+
+if (!session_id())
+  session_start();
+
+// Display custom messages to inform user if successfull push to
+// deichman's rdfstore or not
+function my_admin_notices(){
+  if(!empty($_SESSION['my_admin_notices'])) {
+  	print  $_SESSION['my_admin_notices'];
+  	unset ($_SESSION['my_admin_notices']);
+  }
+}
 
 function create_bookreview_type() {
 	register_post_type( 'book_reviews',
@@ -147,6 +160,11 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 		$body = json_encode( $body );
 		$result = $request->request( $url,
 		                             array( 'method' => 'POST', 'body' => $body ) );
+		if ( $result["response"]["code"] != 201 ) {
+			 $_SESSION['my_admin_notices'] .= '<div class="error"><p>Bokanbefaling push feilet fordi:</p><p>'. $result["body"] .'</p></div>';
+			 return false;
+		}
+
 		$json = json_decode( $result["body"], true );
 
 		// If success, save uri to review metadata
@@ -160,6 +178,10 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 		$body = json_encode( $body );
 		$result = $request->request( $url,
 		                             array( 'method' => 'PUT', 'body' => $body ) );
+		if ( $result["response"]["code"] != 200 ) {
+			$_SESSION['my_admin_notices'] .= '<div class="error"><p>Bokanbefaling opdatering feilet fordi:</p><p>'. $result["body"] .'</p></div>';
+			return false;
+		}
 	}
 
 }
@@ -191,7 +213,10 @@ function delete_post( $book_review_id, $book_review ) {
 	$body = json_encode( $body );
 	$result = $request->request( $url,
 	                             array( 'method' => 'DELETE', 'body' => $body ) );
-	//$json = json_decode( $result["body"], true );
+	if ( $result["response"]["code"] != 200 ) {
+			$_SESSION['my_admin_notices'] .= '<div class="error"><p>Bokanbefaling sletting feilet fordi:</p><p>'. $result["body"] .'</p></div>';
+			return false;
+		}
 }
 
 function remove_uri ( $id) {
