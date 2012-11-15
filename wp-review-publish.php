@@ -163,6 +163,8 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 		if ( $result["response"]["code"] != 201 ) {
 			 $_SESSION['my_admin_notices'] .= '<div class="error"><p>Bokanbefaling push feilet fordi:</p><p>'. $result["body"] .'</p></div>';
 			 return false;
+		} else {
+			$_SESSION['my_admin_notices'] .= '<div class="updated"><p>Bokanbefaling pushet til anbefalinger.deichman.no</p></div>';
 		}
 
 		$json = json_decode( $result["body"], true );
@@ -180,7 +182,8 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 		                             array( 'method' => 'PUT', 'body' => $body ) );
 		if ( $result["response"]["code"] != 200 ) {
 			$_SESSION['my_admin_notices'] .= '<div class="error"><p>Bokanbefaling opdatering feilet fordi:</p><p>'. $result["body"] .'</p></div>';
-			return false;
+		} else {
+			$_SESSION['my_admin_notices'] .= '<div class="updated"><p>Bokanbefaling oppdatert på anbefalinger.deichman.no</p></div>';
 		}
 	}
 
@@ -200,7 +203,6 @@ function delete_post( $book_review_id, $book_review ) {
 	if ( empty( $uri ) )
 		return;
 
-
 	$request = new WP_Http;
 	$args = array();
 	$url = 'http://datatest.deichman.no/api/reviews';
@@ -215,7 +217,8 @@ function delete_post( $book_review_id, $book_review ) {
 	                             array( 'method' => 'DELETE', 'body' => $body ) );
 	if ( $result["response"]["code"] != 200 ) {
 			$_SESSION['my_admin_notices'] .= '<div class="error"><p>Bokanbefaling sletting feilet fordi:</p><p>'. $result["body"] .'</p></div>';
-			return false;
+		} else {
+			$_SESSION['my_admin_notices'] .= '<div class="updated"><p>Bokanbefaling fjernet fra anbefalinger.deichman.no</p></div>';
 		}
 }
 
