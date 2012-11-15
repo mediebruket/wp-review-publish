@@ -120,6 +120,10 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 	if ( $book_review->post_type != 'book_reviews' )
 		return;
 
+	// Don't do anything if post is draft
+	if ( $book_review->post_status != "publish" )
+		return;
+
 	// Store data in meta table if present in post data
 	if ( isset( $_POST['book_review_book_isbn'] ) && $_POST['book_review_book_isbn'] != '' ) {
 		update_post_meta( $book_review_id, 'book_isbn', $_POST['book_review_book_isbn'] );
