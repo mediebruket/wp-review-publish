@@ -14,6 +14,8 @@ add_action( 'admin_init', 'book_reviews_admin_init' );
 add_action( 'admin_menu', 'book_reviews_settings_menu' );
 add_action( 'save_post', 'process_book_review_fields', 10, 2 );
 add_filter( 'pre_get_posts', 'show_book_reviews_as_posts');
+add_action( 'before_delete_post', 'push_delete' );
+add_action( 'untrash_post', 'remove_uri');
 
 function create_bookreview_type() {
 	register_post_type( 'book_reviews',
@@ -61,6 +63,7 @@ function display_book_review_metadata_box ( $book_review ) {
 	$review_teaser = esc_html( get_post_meta( $book_review->ID, 'review_teaser', true ) );
 	$review_audience = esc_html( get_post_meta( $book_review->ID, 'review_audience', true ) );
 	$review_reviewer = esc_html( get_post_meta( $book_review->ID, 'review_reviewer', true ) );
+	$review_uri = esc_html( get_post_meta( $book_review->ID, 'review_uri', true ) );
 	?>
 	<p>Felt merket * er obligatoriske</p>
 	<table>
@@ -89,6 +92,11 @@ function display_book_review_metadata_box ( $book_review ) {
 			<td style="width: 100%">Anmelder</td>
 			<td><input type="text" size="80" name="review_reviewer"
 				value="<?php echo $review_reviewer; ?>" /></td>
+		</tr>
+		<tr>
+			<td style="width: 100%">URI</td>
+			<td><input type="text" disabled="true" size="80" name="review_uri"
+				value="<?php echo $review_uri; ?>" /></td>
 		</tr>
 	</table>
 <?php
@@ -154,6 +162,41 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 		                             array( 'method' => 'PUT', 'body' => $body ) );
 	}
 
+}
+
+function delete_post( $book_review_id, $book_review ) {
+	// Check post type for book reviews
+	if ( $book_review->post_type != 'book_reviews' )
+		return;
+
+	if( !class_exists( 'WP_Http' ) ) {
+		include_once( ABSPATH . WPINC. '/class-http.php' );
+	}
+
+	// Return if uri not present
+	$uri = get_post_meta( $book_review_id, 'review_uri', true );
+	if ( empty( $uri ) )
+		return;
+
+
+	$request = new WP_Http;
+	$args = array();
+	$url = 'http://datatest.deichman.no/api/reviews';
+
+	$body = array (
+		"uri" => $uri,
+		"api_key" => get_option( 'deichman_api_key' )
+		);
+
+	$body = json_encode( $body );
+	$result = $request->request( $url,
+	                             array( 'method' => 'DELETE', 'body' => $body ) );
+	//$json = json_decode( $result["body"], true );
+}
+
+function remove_uri ( $id) {
+	// delete uri, in case post is restored from trash
+	delete_post_meta( $id, 'review_uri');
 }
 
 function save_book_reviews_options() {
