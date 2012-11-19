@@ -2,11 +2,11 @@
 /*
 Plugin Name: WP-review-publish
 Plugin URI: https://github.com/digibib/wp-review-publish
-Description: Push posts as bookreviews to Deichman's RDF-store
+Description: Publisér bokanbefalinger til Decihmans RDF-base direkte fra Wordpress
 Version: 0.1
 Author: Petter Goksøyr Åsen
 Author URI: https://github.com/boutros
-License: GPLv2
+License: GPLv3
 */
 
 add_action( 'init', 'create_bookreview_type' );
