@@ -2,20 +2,20 @@
 /*
 Plugin Name: WP-review-publish
 Plugin URI: https://github.com/digibib/wp-review-publish
-Description: Push posts as bookreviews to Deichman's RDF-store
-Version: 0.1
+Description: Publisér bokanbefalinger til Decihmans RDF-base direkte fra Wordpress
+Version: 0.2
 Author: Petter Goksøyr Åsen
 Author URI: https://github.com/boutros
-License: GPLv2
+License: GPLv3
 */
 
 add_action( 'init', 'create_bookreview_type' );
 add_action( 'admin_init', 'book_reviews_admin_init' );
 add_action( 'admin_menu', 'book_reviews_settings_menu' );
 add_action( 'save_post', 'process_book_review_fields', 10, 2 );
-add_filter( 'pre_get_posts', 'show_book_reviews_as_posts');
-add_action( 'before_delete_post', 'push_delete' );
-add_action( 'untrash_post', 'remove_uri');
+add_filter( 'pre_get_posts', 'show_book_reviews_as_posts' );
+add_action( 'wp_trash_post', 'remove_rdf' );
+add_action( 'untrash_post', 'remove_uri' );
 add_action( 'admin_notices', 'my_admin_notices' );
 
 if (!session_id())
@@ -143,7 +143,6 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 		include_once( ABSPATH . WPINC. '/class-http.php' );
 	}
 	$request = new WP_Http;
-	$args = array();
 	$url = 'http://datatest.deichman.no/api/reviews';
 
 	// Check if all parameters are present:
@@ -174,8 +173,8 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 		$json = json_decode( $result["body"], true );
 
 		// If success, save uri to review metadata
-		if ( $json["work"]["reviews"]["review_id"] != "" )
-			update_post_meta( $book_review_id, 'review_uri', $json["work"]["reviews"]["review_id"] );
+		if ( $json["work"]["reviews"][0]["review_id"] != "" )
+			update_post_meta( $book_review_id, 'review_uri', $json["work"]["reviews"][0]["review_id"] );
 
 	// else if review is updating an allready published review
 	} else {
@@ -193,37 +192,32 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 
 }
 
-function delete_post( $book_review_id, $book_review ) {
-	// Check post type for book reviews
-	if ( $book_review->post_type != 'book_reviews' )
-		return;
-
-	if( !class_exists( 'WP_Http' ) ) {
-		include_once( ABSPATH . WPINC. '/class-http.php' );
-	}
-
+function remove_rdf ( $id ) {
 	// Return if uri not present
-	$uri = get_post_meta( $book_review_id, 'review_uri', true );
+	$uri = get_post_meta( $id, 'review_uri', true );
+
 	if ( empty( $uri ) )
 		return;
 
-	$request = new WP_Http;
-	$args = array();
 	$url = 'http://datatest.deichman.no/api/reviews';
-
-	$body = array (
+	$post_data = array (
 		"uri" => $uri,
 		"api_key" => get_option( 'deichman_api_key' )
 		);
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+	// adding the post variables to the request
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+	$result = curl_exec($ch);
+	curl_close($ch);
 
-	$body = json_encode( $body );
-	$result = $request->request( $url,
-	                             array( 'method' => 'DELETE', 'body' => $body ) );
-	if ( $result["response"]["code"] != 200 ) {
-			$_SESSION['my_admin_notices'] .= '<div class="error"><p>Bokanbefaling sletting feilet fordi:</p><p>'. $result["body"] .'</p></div>';
+	if ( $result == FALSE ) {
+			$_SESSION['my_admin_notices'] .= '<div class="error"><p>Bokanbefaling sletting feilet fordi:</p><p>'. curl_error($ch) .'</p></div>';
 		} else {
 			$_SESSION['my_admin_notices'] .= '<div class="updated"><p>Bokanbefaling fjernet fra anbefalinger.deichman.no</p></div>';
-		}
+	}
 }
 
 function remove_uri ( $id) {
