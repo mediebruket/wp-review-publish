@@ -97,8 +97,8 @@ function display_book_review_metadata_box ( $book_review ) {
 			<td>
 				<select name="review_audience">
 						<option value="0" ></option>
-						<option value="1" <?php if ( $review_audience == 1 ) echo 'selected="selected"'; ?>>Voksne</option>
-						<option value="2" <?php if ( $review_audience == 2 ) echo 'selected="selected"'; ?>>Barn/Ungdom</option>
+						<option value="voksen" <?php if ( $review_audience == 'voksen' ) echo 'selected="selected"'; ?>>Voksen</option>
+						<option value="barn/ungdom" <?php if ( $review_audience == 'barn/ungdom' ) echo 'selected="selected"'; ?>>Barn/Ungdom</option>
 					</select>
 			</td>
 		</tr>
@@ -138,6 +138,9 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 	if ( isset( $_POST['review_reviewer'] ) && $_POST['review_reviewer'] != '' ) {
 		update_post_meta( $book_review_id, 'review_reviewer', $_POST['review_reviewer'] );
 	}
+	if ( isset( $_POST['review_audience'] ) && $_POST['review_audience'] != '0') {
+		update_post_meta( $book_review_id, 'review_audience', $_POST['review_audience'] );
+	}
 
 	// set up HTTP request for push data.deichman.no
 	if( !class_exists( 'WP_Http' ) ) {
@@ -155,8 +158,13 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 		"teaser" => get_post_meta( $book_review_id, 'review_teaser', true ),
 		"api_key" => get_option( 'deichman_api_key' )
 		);
-	$uri = get_post_meta( $book_review_id, 'review_uri', true );
 
+	$audience = get_post_meta( $book_review_id, 'review_audience', true );
+	if ( $audience != "0" && !empty($audience) ) {
+		$body["audience"] = $audience;
+	}
+
+	$uri = get_post_meta( $book_review_id, 'review_uri', true );
 	// If review is published not before
 	if ( empty($uri) ) {
 		// perform POST
