@@ -64,6 +64,9 @@ function book_reviews_admin_init() {
 	if ( get_option( 'deichman_api_key') == false) {
 		add_option( 'deichman_api_key');
 	}
+	// allow tagging and categories for book reviews
+	register_taxonomy_for_object_type('category', 'book_reviews');
+	register_taxonomy_for_object_type('post_tag', 'book_reviews');
 
 	add_action( 'admin_post_save_book_reviews_options', 'save_book_reviews_options');
 	add_meta_box ( 'book_reviews_metadata',
