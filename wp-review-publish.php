@@ -17,6 +17,7 @@ add_filter( 'pre_get_posts', 'show_book_reviews_as_posts' );
 add_action( 'wp_trash_post', 'remove_rdf' );
 add_action( 'untrash_post', 'remove_uri' );
 add_action( 'admin_notices', 'my_admin_notices' );
+add_action( 'save_post', 'remove_rdf_if_draft' );
 
 if (!session_id())
   session_start();
@@ -217,6 +218,15 @@ function remove_rdf ( $id ) {
 			$_SESSION['my_admin_notices'] .= '<div class="error"><p>Bokanbefaling sletting feilet fordi:</p><p>'. curl_error($ch) .'</p></div>';
 		} else {
 			$_SESSION['my_admin_notices'] .= '<div class="updated"><p>Bokanbefaling fjernet fra anbefalinger.deichman.no</p></div>';
+	}
+}
+
+function remove_rdf_if_draft ( $id ) {
+	$book_review = get_post( $id );
+
+	if ( $book_review->post_status == 'draft' || $book_review->post_status == 'pending' ) {
+		remove_rdf( $id );
+		remove_uri( $id );
 	}
 }
 
