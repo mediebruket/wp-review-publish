@@ -145,6 +145,24 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 	if ( $book_review->post_status != "publish" )
 		return;
 
+	// Don't push if required parameters are missing(text, teaser, title, isbn)
+	if ( $book_review->post_title == "") {
+		$_SESSION['my_admin_notices'] .= '<div class="error"><p>Ikke pushet til anbefalinger.deichman.no fordi: tittel mangler</p></div>';
+		return;
+	}
+	if ( $book_review->post_content == "") {
+		$_SESSION['my_admin_notices'] .= '<div class="error"><p>Ikke pushet til anbefalinger.deichman.no fordi: omtaletekst mangler</p></div>';
+		return;
+	}
+	if ( get_post_meta( $book_review_id, 'review_teaser', true ) == "" ) {
+		$_SESSION['my_admin_notices'] .= '<div class="error"><p>Ikke pushet til anbefalinger.deichman.no fordi: teaser mangler</p></div>';
+		return;
+	}
+	if ( get_post_meta( $book_review_id, 'book_isbn', true ) == "" ) {
+		$_SESSION['my_admin_notices'] .= '<div class="error"><p>Ikke pushet til anbefalinger.deichman.no fordi: isbn mangler</p></div>';
+		return;
+	}
+
 	// set up HTTP request for push data.deichman.no
 	if( !class_exists( 'WP_Http' ) ) {
 		include_once( ABSPATH . WPINC. '/class-http.php' );
