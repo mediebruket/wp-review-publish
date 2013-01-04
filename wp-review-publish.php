@@ -125,16 +125,16 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 		return;
 
 	// Store data in meta table if present in post data
-	if ( isset( $_POST['book_review_book_isbn'] ) && $_POST['book_review_book_isbn'] != '' ) {
+	if ( isset( $_POST['book_review_book_isbn'] ) ) {
 		update_post_meta( $book_review_id, 'book_isbn', $_POST['book_review_book_isbn'] );
 	}
-	if ( isset( $_POST['review_teaser'] ) && $_POST['review_teaser'] != '' ) {
+	if ( isset( $_POST['review_teaser'] ) ) {
 		update_post_meta( $book_review_id, 'review_teaser', $_POST['review_teaser'] );
 	}
-	if ( isset( $_POST['review_audience'] ) && $_POST['review_audience'] != '' ) {
+	if ( isset( $_POST['review_audience'] ) ) {
 		update_post_meta( $book_review_id, 'review_audience', $_POST['review_audience'] );
 	}
-	if ( isset( $_POST['review_reviewer'] ) && $_POST['review_reviewer'] != '' ) {
+	if ( isset( $_POST['review_reviewer'] ) ) {
 		update_post_meta( $book_review_id, 'review_reviewer', $_POST['review_reviewer'] );
 	}
 	if ( isset( $_POST['review_audience'] ) && $_POST['review_audience'] != '0') {
