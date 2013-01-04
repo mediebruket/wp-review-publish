@@ -208,8 +208,8 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 		$json = json_decode( $result["body"], true );
 
 		// If success, save uri to review metadata
-		if ( $json["work"]["reviews"][0]["review_id"] != "" )
-			update_post_meta( $book_review_id, 'review_uri', $json["work"]["reviews"][0]["review_id"] );
+		if ( $json["work"]["reviews"][0]["uri"] != "" )
+			update_post_meta( $book_review_id, 'review_uri', $json["work"]["reviews"][0]["uri"] );
 
 	// else if review is updating an allready published review
 	} else {
