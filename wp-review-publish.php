@@ -185,9 +185,9 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 		$body["audience"] = $audience;
 	}
 
-	$reviewer = get_post_meta( $book_review_id, 'review_audience', true );
+	$reviewer = get_post_meta( $book_review_id, 'review_reviewer', true );
 	if ( $reviewer != "0" && !empty($reviewer) ) {
-		$body["audience"] = $reviewer;
+		$body["reviewer"] = $reviewer;
 	}
 
 	$uri = get_post_meta( $book_review_id, 'review_uri', true );
