@@ -18,6 +18,7 @@ add_action( 'wp_trash_post', 'remove_rdf' );
 add_action( 'untrash_post', 'remove_uri' );
 add_action( 'admin_notices', 'my_admin_notices' );
 add_action( 'save_post', 'remove_rdf_if_draft' );
+add_filter( 'manage_edit-book_reviews_columns', 'my_columns' );
 
 if (!session_id())
   session_start();
@@ -324,4 +325,11 @@ function show_book_reviews_as_posts ( $query ) {
 		$query->set ( 'post_type', array( 'post', 'book_reviews'));
 	return $query;
 }
+
+function my_columns( $columns ) {
+    $columns['author'] = 'Forfatter';
+    unset( $columns['comments'] );
+    return $columns;
+}
+
 ?>
