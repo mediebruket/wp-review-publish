@@ -96,13 +96,16 @@ function display_book_review_metadata_box ( $book_review ) {
 			</td>
 		</tr>
 		<tr>
-			<td style="width: 100%">Målgruppe (for anbefalingen)</td>
+			<td style="width: 100%">Målgruppe(r) for anbefalingen:</td>
 			<td>
-				<select name="review_audience">
-						<option value="0" ></option>
-						<option value="voksen" <?php if ( $review_audience == 'voksen' ) echo 'selected="selected"'; ?>>Voksen</option>
-						<option value="barn/ungdom" <?php if ( $review_audience == 'barn/ungdom' ) echo 'selected="selected"'; ?>>Barn/Ungdom</option>
-					</select>
+				<fieldset>
+					<input id="a1" <?php if ( preg_match("/barn/", $review_audience)) echo 'checked="checked"'; ?> class="audiences" name="audience[]" type="checkbox" value="barn">
+					<label for="a1" class="checklabel">barn</label>
+					<input id="a2" <?php if ( preg_match("/ungdom/", $review_audience)) echo 'checked="checked"'; ?>class="audiences" name="audience[]" type="checkbox" value="ungdom">
+					<label for="a2" class="checklabel">ungdom</label>
+					<input id="a3" <?php if ( preg_match("/voksen/", $review_audience)) echo 'checked="checked"'; ?>class="audiences" name="audience[]" type="checkbox" value="voksen">
+					<label for="a3" class="checklabel">voksen</label>
+				</fieldset>
 			</td>
 		</tr>
 		<tr>
@@ -131,8 +134,11 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 	if ( isset( $_POST['review_teaser'] ) ) {
 		update_post_meta( $book_review_id, 'review_teaser', $_POST['review_teaser'] );
 	}
-	if ( isset( $_POST['review_audience'] ) ) {
-		update_post_meta( $book_review_id, 'review_audience', $_POST['review_audience'] );
+	if ( isset( $_POST['audience'] ) ) {
+		$s= join("|", $_POST['audience']);
+		update_post_meta( $book_review_id, 'review_audience', $s );
+	} else {
+		update_post_meta( $book_review_id, 'review_audience', "" );
 	}
 	if ( isset( $_POST['review_reviewer'] ) ) {
 		update_post_meta( $book_review_id, 'review_reviewer', $_POST['review_reviewer'] );
