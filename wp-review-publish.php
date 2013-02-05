@@ -3,7 +3,7 @@
 Plugin Name: WP-review-publish
 Plugin URI: https://github.com/digibib/wp-review-publish
 Description: Publisér bokanbefalinger til Decihmans RDF-base direkte fra Wordpress
-Version: 0.2
+Version: 0.2.1
 Author: Petter Goksøyr Åsen
 Author URI: https://github.com/boutros
 License: GPLv3
