@@ -83,7 +83,7 @@ function display_book_review_metadata_box ( $book_review ) {
 	$review_reviewer = esc_html( get_post_meta( $book_review->ID, 'review_reviewer', true ) );
 	$review_uri = esc_html( get_post_meta( $book_review->ID, 'review_uri', true ) );
 	?>
-	<p>Felt merket * er obligatoriske</p>
+	<p><strong>Felt merket * er obligatoriske</strong></p>
 	<table>
 		<tr>
 			<td style="width: 100%">ISBN*</td>
@@ -97,7 +97,7 @@ function display_book_review_metadata_box ( $book_review ) {
 			</td>
 		</tr>
 		<tr>
-			<td style="width: 100%">Målgruppe(r) for anbefalingen:</td>
+			<td style="width: 100%">Målgruppe(r)* for <em>anbefalingen</em>, ikke for boka:</td>
 			<td>
 				<fieldset>
 					<input id="a1" <?php if ( preg_match("/barn/", $review_audience)) echo 'checked="checked"'; ?> class="audiences" name="audience[]" type="checkbox" value="barn">
@@ -152,7 +152,7 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 	if ( $book_review->post_status != "publish" )
 		return;
 
-	// Don't push if required parameters are missing(text, teaser, title, isbn)
+	// Don't push if required parameters are missing(text, teaser, title, isbn, audience)
 	if ( $book_review->post_title == "") {
 		$_SESSION['my_admin_notices'] .= '<div class="error"><p>Ikke pushet til anbefalinger.deichman.no fordi: tittel mangler</p></div>';
 		return;
@@ -169,6 +169,11 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 		$_SESSION['my_admin_notices'] .= '<div class="error"><p>Ikke pushet til anbefalinger.deichman.no fordi: isbn mangler</p></div>';
 		return;
 	}
+	if ( get_post_meta( $book_review_id, 'review_audience', true ) == "" ) {
+		$_SESSION['my_admin_notices'] .= '<div class="error"><p>Ikke pushet til anbefalinger.deichman.no fordi: målgruppe mangler</p></div>';
+		return;
+	}
+
 
 	// set up HTTP request for push data.deichman.no
 	if( !class_exists( 'WP_Http' ) ) {
