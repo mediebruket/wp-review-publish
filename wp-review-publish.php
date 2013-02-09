@@ -186,6 +186,7 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 	// required: text, teaser, author, (review)title,
 	// optional: audience, reviewer
 	$body = array (
+		"published" => true,
 		"title" => $book_review->post_title,
 		"text"  => $book_review->post_content,
 		"teaser" => get_post_meta( $book_review_id, 'review_teaser', true ),
@@ -220,8 +221,8 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 		$json = json_decode( $result["body"], true );
 
 		// If success, save uri to review metadata
-		if ( $json["work"]["reviews"][0]["uri"] != "" )
-			update_post_meta( $book_review_id, 'review_uri', $json["work"]["reviews"][0]["uri"] );
+		if ( $json["review"]["uri"] != "" )
+			update_post_meta( $book_review_id, 'review_uri', $json["review"]["uri"] );
 
 	// else if review is updating an allready published review
 	} else {
