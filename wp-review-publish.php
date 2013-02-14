@@ -327,7 +327,7 @@ function book_reviews_config_page() {
 }
 
 function show_book_reviews_as_posts ( $query ) {
-	if( is_home() && $query->is_main_query() ){
+	if( ( is_home() && $query->is_main_query() ) || is_feed() ){
 		$query->set ( 'post_type', array( 'post', 'book_reviews'));
 	}
 	return $query;
