@@ -185,10 +185,11 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 	// Check if all parameters are present:
 	// required: text, teaser, author, (review)title, audience
 	// optional: reviewer
+	$cleaned_text = preg_replace('~^\s*(.*?)\s*$~sm', '<p>$1</p>', $book_review->post_content);
 	$body = array (
 		"published" => true,
 		"title" => $book_review->post_title,
-		"text"  => $book_review->post_content,
+		"text"  => $cleaned_text,
 		"teaser" => get_post_meta( $book_review_id, 'review_teaser', true ),
 		"api_key" => get_option( 'deichman_api_key' )
 		);
