@@ -183,8 +183,8 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 	$url = 'http://datatest.deichman.no/api/reviews';
 
 	// Check if all parameters are present:
-	// required: text, teaser, author, (review)title,
-	// optional: audience, reviewer
+	// required: text, teaser, author, (review)title, audience
+	// optional: reviewer
 	$body = array (
 		"published" => true,
 		"title" => $book_review->post_title,
