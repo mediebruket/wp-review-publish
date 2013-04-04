@@ -81,6 +81,7 @@ function display_book_review_metadata_box ( $book_review ) {
 	$review_teaser = esc_html( get_post_meta( $book_review->ID, 'review_teaser', true ) );
 	$review_audience = esc_html( get_post_meta( $book_review->ID, 'review_audience', true ) );
 	$review_reviewer = esc_html( get_post_meta( $book_review->ID, 'review_reviewer', true ) );
+	$review_reviewer_email = esc_html( get_post_meta( $book_review->ID, 'review_reviewer_email', true ) );
 	$review_uri = esc_html( get_post_meta( $book_review->ID, 'review_uri', true ) );
 	?>
 	<p><strong>Felt merket * er obligatoriske</strong></p>
@@ -110,7 +111,12 @@ function display_book_review_metadata_box ( $book_review ) {
 			</td>
 		</tr>
 		<tr>
-			<td style="width: 100%">Anmelder</td>
+			<td style="width: 100%">Anmelders epost*</td>
+			<td><input type="text" size="80" name="review_reviewer_email"
+				value="<?php echo $review_reviewer_email; ?>" /></td>
+		</tr>
+		<tr>
+			<td style="width: 100%">Anmelders navn</td>
 			<td><input type="text" size="80" name="review_reviewer"
 				value="<?php echo $review_reviewer; ?>" /></td>
 		</tr>
@@ -144,6 +150,9 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 	if ( isset( $_POST['review_reviewer'] ) ) {
 		update_post_meta( $book_review_id, 'review_reviewer', $_POST['review_reviewer'] );
 	}
+	if ( isset( $_POST['review_reviewer_email'] ) ) {
+		update_post_meta( $book_review_id, 'review_reviewer_email', $_POST['review_reviewer_email'] );
+	}
 	if ( isset( $_POST['review_audience'] ) && $_POST['review_audience'] != '0') {
 		update_post_meta( $book_review_id, 'review_audience', $_POST['review_audience'] );
 	}
@@ -152,7 +161,7 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 	if ( $book_review->post_status != "publish" )
 		return;
 
-	// Don't push if required parameters are missing(text, teaser, title, isbn, audience)
+	// Don't push if required parameters are missing(text, teaser, title, isbn, audience, reviewer-email)
 	if ( $book_review->post_title == "") {
 		$_SESSION['my_admin_notices'] .= '<div class="error"><p>Ikke pushet til anbefalinger.deichman.no fordi: tittel mangler</p></div>';
 		return;
@@ -173,6 +182,10 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 		$_SESSION['my_admin_notices'] .= '<div class="error"><p>Ikke pushet til anbefalinger.deichman.no fordi: målgruppe mangler</p></div>';
 		return;
 	}
+	if ( get_post_meta( $book_review_id, 'review_reviewer_email', true ) == "" ) {
+		$_SESSION['my_admin_notices'] .= '<div class="error"><p>Ikke pushet til anbefalinger.deichman.no fordi: anmelders epost mangler</p></div>';
+		return;
+	}
 
 
 	// set up HTTP request for push data.deichman.no
@@ -180,7 +193,7 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 		include_once( ABSPATH . WPINC. '/class-http.php' );
 	}
 	$request = new WP_Http;
-	$url = 'http://datatest.deichman.no/api/reviews';
+	$url = 'http://marc2rdf.deichman.no/api/reviews';
 
 	// Check if all parameters are present:
 	// required: text, teaser, author, (review)title, audience
@@ -191,7 +204,8 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 		"title" => $book_review->post_title,
 		"text"  => $cleaned_text,
 		"teaser" => get_post_meta( $book_review_id, 'review_teaser', true ),
-		"api_key" => get_option( 'deichman_api_key' )
+		"api_key" => get_option( 'deichman_api_key' ),
+		"reviewer" => get_post_meta( $book_review_id, 'review_reviewer_email', true )
 		);
 
 	$audience = get_post_meta( $book_review_id, 'review_audience', true );
@@ -199,10 +213,10 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 		$body["audience"] = $audience;
 	}
 
-	$reviewer = get_post_meta( $book_review_id, 'review_reviewer', true );
-	if ( $reviewer != "0" && !empty($reviewer) ) {
-		$body["reviewer"] = $reviewer;
-	}
+	// $reviewer = get_post_meta( $book_review_id, 'review_reviewer', true );
+	// if ( $reviewer != "0" && !empty($reviewer) ) {
+	// 	$body["reviewer"] = $reviewer;
+	// }
 
 	$uri = get_post_meta( $book_review_id, 'review_uri', true );
 	// If review is published not before
@@ -248,7 +262,7 @@ function remove_rdf ( $id ) {
 	if ( empty( $uri ) )
 		return;
 
-	$url = 'http://datatest.deichman.no/api/reviews';
+	$url = 'http://marc2rdf.deichman.no/api/reviews';
 	$post_data = array (
 		"uri" => $uri,
 		"api_key" => get_option( 'deichman_api_key' )
