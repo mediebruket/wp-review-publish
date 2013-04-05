@@ -116,12 +116,12 @@ function display_book_review_metadata_box ( $book_review ) {
 				value="<?php echo $review_reviewer_email; ?>" /></td>
 		</tr>
 		<tr>
-			<td style="width: 100%">Anmelders navn</td>
+			<td style="width: 100%">Anmelders navn*</td>
 			<td><input type="text" size="80" name="review_reviewer"
 				value="<?php echo $review_reviewer; ?>" /></td>
 		</tr>
 		<tr>
-			<td style="width: 100%">URI</td>
+			<td style="width: 100%">URI (fylles ut automatisk)</td>
 			<td><input type="text" disabled="true" size="80" name="review_uri"
 				value="<?php echo $review_uri; ?>" /></td>
 		</tr>
