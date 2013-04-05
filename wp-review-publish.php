@@ -213,10 +213,10 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 		$body["audience"] = $audience;
 	}
 
-	// $reviewer = get_post_meta( $book_review_id, 'review_reviewer', true );
-	// if ( $reviewer != "0" && !empty($reviewer) ) {
-	// 	$body["reviewer"] = $reviewer;
-	// }
+	$reviewer = get_post_meta( $book_review_id, 'review_reviewer', true );
+	if ( $reviewer != "0" && !empty($reviewer) ) {
+		$body["reviewer_name"] = $reviewer;
+	}
 
 	$uri = get_post_meta( $book_review_id, 'review_uri', true );
 	// If review is published not before
