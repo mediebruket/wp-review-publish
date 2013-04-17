@@ -343,7 +343,13 @@ function book_reviews_config_page() {
 
 function show_book_reviews_as_posts ( $query ) {
 	if( ( is_home() && $query->is_main_query() ) || is_feed() || is_category() || is_tag() ){
-		$query->set ( 'post_type', array( 'nav_menu_item', 'post', 'book_reviews'));
+		if ( is_category() || is_tag() ) {
+			$post_types = array('nav_menu_item', 'post', 'book_reviews');
+		} else {
+			$post_types = array('post', 'book_reviews');
+		}
+
+		$query->set ( 'post_type', $post_types);
 	}
 	return $query;
 }
