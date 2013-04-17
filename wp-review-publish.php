@@ -58,7 +58,7 @@ function create_bookreview_type() {
 			'has_archive' => true
 			)
 		);
-
+	add_theme_support( 'post-thumbnails', array( 'post', 'page', 'book_reviews' ) );
 }
 
 function book_reviews_admin_init() {
