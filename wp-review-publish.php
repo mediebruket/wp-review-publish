@@ -53,7 +53,7 @@ function create_bookreview_type() {
 			'public' => true,
 			'menu_position' => 20,
 			'supports' =>
-				array( 'author', title', 'editor', 'comments','thumbnail'),
+				array( 'author', 'title', 'editor', 'comments','thumbnail'),
 			'taxonomies' => array( '' ),
 			'has_archive' => true
 			)
