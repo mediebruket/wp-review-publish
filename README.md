@@ -2,7 +2,7 @@
 Wordpress plugin for å publisere bokanbefalinger til Deichmans RDF-base.
 
 ## Status
-April 2013: Pluginet testes internt av Deichman. Snart klar til å settes i vanlig drift.
+Juni 2013: Pluginet er i normal drift og brukes av Deichmanske bibliotek og Buskerud fylkesbibliotek
 
 ## Hva
 Pluginet skal gjøre det enkelt for bloggende biblioteker å kunne publisere anbefalinger direkte fra sine Wordpress-blogger til Deichmans RDF-store.
@@ -17,7 +17,7 @@ sudo apt-get install php5-curl
 ```
 
 ### API-nøkkel
-Bibliotek som ønsker å bidra med bokanbefalinger vil få utdelt en API-nøkkel av Deichman. Denne angis i konfigurasjonen til pluginet (Settings->Bokanbefalinger).
+Bibliotek som ønsker å bidra med bokanbefalinger vil få utdelt en [API-nøkkel av Deichman](mailto: digitalutvikling@gmail.com). Denne angis i konfigurasjonen til pluginet (Settings->Bokanbefalinger).
 
 ## Bruk
 Når du skal skrive en bokanbefaling veldger du 'bokanbefaling' istedenfor vanlig bloggpost i wordpress-admin - fyller inn noen obligatoriske felter i tillegg til tittel og tekst - og når du så trykker publisér, så vil anbefalingen også sendes til Deichman's åpne bokanbefalingsbase, til glede og nytte for hele biblioteknorge :)
@@ -35,4 +35,4 @@ Hvis du endrer eller sletter en bokanbefaling i Wordpress-bloggen, vil endringen
 + Dersom Deichmans katalog ikke har en oppføring på ISBN-nummeret i bokanbefalingen, vil den ikke kunne skrives til RDF-basen. Dette er en begrensning vi jobber med å finne løsninger på.
 
 ## Hjelp?
-Er det andre uklarheter så ikke nøl med å ta kontakt! Vi hjelper deg igang :)
+Er det andre uklarheter så ikke nøl med å ta kontakt! [Vi hjelper deg igang](mailto: digitalutvikling@gmail.com) :)
