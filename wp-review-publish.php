@@ -19,6 +19,8 @@ add_action( 'untrash_post', 'remove_uri' );
 add_action( 'admin_notices', 'my_admin_notices' );
 add_action( 'save_post', 'remove_rdf_if_draft' );
 add_filter( 'manage_edit-book_reviews_columns', 'my_columns' );
+add_action('admin_head-post.php','validate_metadata');
+add_action('admin_head-post-new.php','validate_metadata');
 
 if (!session_id())
   session_start();
@@ -27,8 +29,8 @@ if (!session_id())
 // deichman's rdfstore or not
 function my_admin_notices(){
   if(!empty($_SESSION['my_admin_notices'])) {
-  	print  $_SESSION['my_admin_notices'];
-  	unset ($_SESSION['my_admin_notices']);
+	print  $_SESSION['my_admin_notices'];
+	unset ($_SESSION['my_admin_notices']);
   }
 }
 
@@ -88,18 +90,18 @@ function display_book_review_metadata_box ( $book_review ) {
 	<table>
 		<tr>
 			<td style="width: 100%">ISBN</td>
-			<td><input type="text" size="80" name="book_review_book_isbn"
+			<td><input id="metadata-isbn" type="text" size="80" name="book_review_book_isbn"
 				value="<?php echo $book_isbn; ?>" /></td>
 		</tr>
 		<tr>
 			<td style="width: 100%">Teaser</td>
 			<td>
-				<textarea  name="review_teaser" rows="5" cols="79"><?php echo $review_teaser; ?></textarea>
+				<textarea id="metadata-teaser" name="review_teaser" rows="5" cols="79"><?php echo $review_teaser; ?></textarea>
 			</td>
 		</tr>
 		<tr>
 			<td style="width: 100%">Målgruppe(r) for <em>anbefalingen</em>, ikke for boka:</td>
-			<td>
+			<td><div id="metadata-audience" style="border: 1px solid #dedede; padding: 4px">
 				<fieldset>
 					<input id="a1" <?php if ( preg_match("/barn/", $review_audience)) echo 'checked="checked"'; ?> class="audiences" name="audience[]" type="checkbox" value="barn">
 					<label for="a1" class="checklabel">barn</label>
@@ -108,16 +110,17 @@ function display_book_review_metadata_box ( $book_review ) {
 					<input id="a3" <?php if ( preg_match("/voksen/", $review_audience)) echo 'checked="checked"'; ?>class="audiences" name="audience[]" type="checkbox" value="voksen">
 					<label for="a3" class="checklabel">voksen</label>
 				</fieldset>
+				</div>
 			</td>
 		</tr>
 		<tr>
 			<td style="width: 100%">Anmelders epost</td>
-			<td><input type="text" size="80" name="review_reviewer_email"
+			<td><input id="metadata-email" type="text" size="80" name="review_reviewer_email"
 				value="<?php echo $review_reviewer_email; ?>" /></td>
 		</tr>
 		<tr>
 			<td style="width: 100%">Anmelders navn</td>
-			<td><input type="text" size="80" name="review_reviewer"
+			<td><input id="metadata-name" type="text" size="80" name="review_reviewer"
 				value="<?php echo $review_reviewer; ?>" /></td>
 		</tr>
 		<tr>
@@ -127,6 +130,47 @@ function display_book_review_metadata_box ( $book_review ) {
 		</tr>
 	</table>
 <?php
+}
+
+function validate_metadata() {
+global $post;
+if ( is_admin() && $post->post_type == 'book_reviews' ){
+	?>
+	<script language="javascript" type="text/javascript">
+		jQuery(document).ready(function() {
+			jQuery('#publish').on('click', function(e) {
+				var inputs = ["title", "metadata-isbn", "metadata-name", "metadata-teaser", "metadata-email"];
+				var valid = true;
+				inputs.forEach(function( i ) {
+					var el = document.getElementById(i);
+					if ( !el.value  ) {
+						valid = false;
+						el.style.borderColor = "red";
+					} else {
+						el.style.borderColor = "#dedede";
+					}
+
+				});
+				var audienceMissing = true;
+				jQuery("#"+"metadata-audience").find("input").each(function ( i ) {
+					if ( this.checked == true ) {
+						audienceMissing = false;
+					}
+				});
+				if ( audienceMissing ) {
+					document.getElementById("metadata-audience").style.borderColor = "red";
+					valid = false;
+				}
+				if ( !valid ) {
+					jQuery('.temp-error').remove();
+					jQuery('#publish').parent().parent().prepend("<div class='error temp-error'>Fyll ut alle obligatoriske felt!</div>");
+					e.preventDefault();
+				}
+			});
+		});
+	</script>
+	<?php
+	}
 }
 
 function process_book_review_fields( $book_review_id, $book_review ) {
@@ -160,33 +204,6 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 	// Don't do continue if post is draft
 	if ( $book_review->post_status != "publish" )
 		return;
-
-	// Don't push if required parameters are missing(text, teaser, title, isbn, audience, reviewer-email)
-	if ( $book_review->post_title == "") {
-		$_SESSION['my_admin_notices'] .= '<div class="error"><p>Ikke pushet til anbefalinger.deichman.no fordi: tittel mangler</p></div>';
-		return;
-	}
-	if ( $book_review->post_content == "") {
-		$_SESSION['my_admin_notices'] .= '<div class="error"><p>Ikke pushet til anbefalinger.deichman.no fordi: omtaletekst mangler</p></div>';
-		return;
-	}
-	if ( get_post_meta( $book_review_id, 'review_teaser', true ) == "" ) {
-		$_SESSION['my_admin_notices'] .= '<div class="error"><p>Ikke pushet til anbefalinger.deichman.no fordi: teaser mangler</p></div>';
-		return;
-	}
-	if ( get_post_meta( $book_review_id, 'book_isbn', true ) == "" ) {
-		$_SESSION['my_admin_notices'] .= '<div class="error"><p>Ikke pushet til anbefalinger.deichman.no fordi: isbn mangler</p></div>';
-		return;
-	}
-	if ( get_post_meta( $book_review_id, 'review_audience', true ) == "" ) {
-		$_SESSION['my_admin_notices'] .= '<div class="error"><p>Ikke pushet til anbefalinger.deichman.no fordi: målgruppe mangler</p></div>';
-		return;
-	}
-	if ( get_post_meta( $book_review_id, 'review_reviewer_email', true ) == "" ) {
-		$_SESSION['my_admin_notices'] .= '<div class="error"><p>Ikke pushet til anbefalinger.deichman.no fordi: anmelders epost mangler</p></div>';
-		return;
-	}
-
 
 	// set up HTTP request for push data.deichman.no
 	if( !class_exists( 'WP_Http' ) ) {
@@ -225,7 +242,7 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 		$body["isbn"] = get_post_meta( $book_review_id, 'book_isbn', true );
 		$body = json_encode( $body );
 		$result = $request->request( $url,
-		                             array( 'method' => 'POST', 'body' => $body ) );
+									 array( 'method' => 'POST', 'body' => $body ) );
 		if ( $result["response"]["code"] != 201 ) {
 			 $_SESSION['my_admin_notices'] .= '<div class="error"><p>Bokanbefaling push feilet fordi:</p><p>'. $result["body"] .'</p></div>';
 			 return false;
@@ -245,7 +262,7 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 		// perform PUT
 		$body = json_encode( $body );
 		$result = $request->request( $url,
-		                             array( 'method' => 'PUT', 'body' => $body ) );
+									 array( 'method' => 'PUT', 'body' => $body ) );
 		if ( $result["response"]["code"] != 200 ) {
 			$_SESSION['my_admin_notices'] .= '<div class="error"><p>Bokanbefaling opdatering feilet fordi:</p><p>'. $result["body"] .'</p></div>';
 		} else {
@@ -309,14 +326,14 @@ function save_book_reviews_options() {
 	}
 
 	wp_redirect ( add_query_arg ( array( 'page' => 'wp-review-publish', 'message' => '1' ),
-		            admin_url( 'options-general.php' ) ) );
+					admin_url( 'options-general.php' ) ) );
 	exit;
 }
 
 function book_reviews_settings_menu() {
 	add_options_page( 'Bokanbefalinger konfigurasjon',
-	 				  'Bokanbefalinger', 'manage_options',
-	 				  'wp-review-publish', 'book_reviews_config_page');
+					  'Bokanbefalinger', 'manage_options',
+					  'wp-review-publish', 'book_reviews_config_page');
 }
 
 function book_reviews_config_page() {
@@ -355,9 +372,9 @@ function show_book_reviews_as_posts ( $query ) {
 }
 
 function my_columns( $columns ) {
-    $columns['author'] = 'Forfatter';
-    unset( $columns['comments'] );
-    return $columns;
+	$columns['author'] = 'Forfatter';
+	unset( $columns['comments'] );
+	return $columns;
 }
 
 ?>
