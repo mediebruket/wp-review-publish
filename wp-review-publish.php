@@ -86,21 +86,21 @@ function display_book_review_metadata_box ( $book_review ) {
 	$review_reviewer_email = esc_html( get_post_meta( $book_review->ID, 'review_reviewer_email', true ) );
 	$review_uri = esc_html( get_post_meta( $book_review->ID, 'review_uri', true ) );
 	?>
-	<p><strong>Alle felt er obligatoriske</strong></p>
+	<p style="color:red"><strong>Alle felt er obligatoriske</strong></p>
 	<table>
 		<tr>
-			<td style="width: 100%">ISBN</td>
+			<td style="width: 100%">ISBN<span style="color:red">*</span></td>
 			<td><input id="metadata-isbn" type="text" size="80" name="book_review_book_isbn"
 				value="<?php echo $book_isbn; ?>" /></td>
 		</tr>
 		<tr>
-			<td style="width: 100%">Teaser</td>
+			<td style="width: 100%">Teaser<span style="color:red">*</span></td>
 			<td>
 				<textarea id="metadata-teaser" name="review_teaser" rows="5" cols="79"><?php echo $review_teaser; ?></textarea>
 			</td>
 		</tr>
 		<tr>
-			<td style="width: 100%">Målgruppe(r) for <em>anbefalingen</em>, ikke for boka:</td>
+			<td style="width: 100%">Målgruppe(r)<span style="color:red">*</span> for <em>anbefalingen</em>, ikke for boka:</td>
 			<td><div id="metadata-audience" style="border: 1px solid #dedede; padding: 4px">
 				<fieldset>
 					<input id="a1" <?php if ( preg_match("/barn/", $review_audience)) echo 'checked="checked"'; ?> class="audiences" name="audience[]" type="checkbox" value="barn">
@@ -114,12 +114,12 @@ function display_book_review_metadata_box ( $book_review ) {
 			</td>
 		</tr>
 		<tr>
-			<td style="width: 100%">Anmelders epost</td>
+			<td style="width: 100%">Anmelders epost<span style="color:red">*</span></td>
 			<td><input id="metadata-email" type="text" size="80" name="review_reviewer_email"
 				value="<?php echo $review_reviewer_email; ?>" /></td>
 		</tr>
 		<tr>
-			<td style="width: 100%">Anmelders navn</td>
+			<td style="width: 100%">Anmelders navn<span style="color:red">*</span></td>
 			<td><input id="metadata-name" type="text" size="80" name="review_reviewer"
 				value="<?php echo $review_reviewer; ?>" /></td>
 		</tr>
