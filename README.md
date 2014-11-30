@@ -24,6 +24,9 @@ Når du skal skrive en bokanbefaling veldger du 'bokanbefaling' istedenfor vanli
 
 Hvis du endrer eller sletter en bokanbefaling i Wordpress-bloggen, vil endringene også sendes til RDF-basen.
 
+## Oppdatere plugin
+For å oppdatere plugin er det bare å laste opp og overskrive `wp-review-publish.php`.
+
 ## Om metadata
 + Alle metadatafelt er obligatoriske.
 + URI-feltet fylles ut automatisk når anbefalingen er publisert til RDF-storen. Kan ikke endres av bruker.
@@ -36,3 +39,6 @@ Hvis du endrer eller sletter en bokanbefaling i Wordpress-bloggen, vil endringen
 
 ## Hjelp?
 Er det andre uklarheter så ikke nøl med å ta kontakt! [Vi hjelper deg igang](mailto: digitalutvikling@gmail.com) :)
+
+## TODO
+* Få plugin inn i Wordpress-repository, slik for å forenkle installasjon og oppdatering.
