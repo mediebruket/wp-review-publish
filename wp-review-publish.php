@@ -57,7 +57,8 @@ function create_bookreview_type() {
 			'supports' =>
 				array( 'author', 'title', 'editor', 'comments','thumbnail'),
 			'taxonomies' => array( '' ),
-			'has_archive' => true
+			'has_archive' => true,
+			'rewrite' => array( 'slug' => 'bokomtaler')
 			)
 		);
 	add_theme_support( 'post-thumbnails', array( 'post', 'page', 'book_reviews' ) );
