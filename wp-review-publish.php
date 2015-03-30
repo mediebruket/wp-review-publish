@@ -38,19 +38,19 @@ function create_bookreview_type() {
 	register_post_type( 'book_reviews',
 		array(
 			'labels' => array(
-				'name' => 'Bokanbefalinger',
-				'singular_name' => 'Bokanbefaling',
-				'add_new' => 'Skriv ny',
-				'add_new_item' => 'Skriv bokanbefaling',
-				'edit' => 'Rediger',
-				'edit_item' => 'Rediger bokanbefaling',
-				'new_item' => 'Ny bokanbefaling',
-				'view' => 'Vis',
-				'view_item' => 'Vis bokanbefaling',
-				'search_items' => 'Søk i bokanbefalinger',
-				'not_found' => 'Fant ingen bokanbefalinger',
-				'not_found_in_trash' => 'Ingen bokanbefalinger i søppelkurven',
-				'parent' => 'Overordnet bokanbefaling'
+				'name' => __('Bokanbefalinger', 'wp-review-publish'),
+				'singular_name' => __('Bokanbefaling', 'wp-review-publish'),
+				'add_new' => __('Skriv ny', 'wp-review-publish'),
+				'add_new_item' => __('Skriv bokanbefaling', 'wp-review-publish'),
+				'edit' => __('Rediger', 'wp-review-publish'),
+				'edit_item' => __('Rediger bokanbefaling', 'wp-review-publish'),
+				'new_item' => __('Ny bokanbefaling', 'wp-review-publish'),
+				'view' => __('Vis', 'wp-review-publish'),
+				'view_item' => __('Vis bokanbefaling', 'wp-review-publish'),
+				'search_items' => __('Søk i bokanbefalinger', 'wp-review-publish'),
+				'not_found' => __('Fant ingen bokanbefalinger', 'wp-review-publish'),
+				'not_found_in_trash' => __('Ingen bokanbefalinger i søppelkurven', 'wp-review-publish'),
+				'parent' => __('Overordnet bokanbefaling', 'wp-review-publish')
 			),
 			'public' => true,
 			'menu_position' => 20,
@@ -87,45 +87,45 @@ function display_book_review_metadata_box ( $book_review ) {
 	$review_reviewer_email = esc_html( get_post_meta( $book_review->ID, 'review_reviewer_email', true ) );
 	$review_uri = esc_html( get_post_meta( $book_review->ID, 'review_uri', true ) );
 	?>
-	<p style="color:red"><strong>Alle felt er obligatoriske</strong></p>
+	<p style="color:red"><strong><?php _e('Alle felt er obligatoriske', 'wp-review-publish'); ?></strong></p>
 	<table>
 		<tr>
-			<td style="width: 100%">ISBN<span style="color:red">*</span></td>
+			<td style="width: 100%"><?php _e('ISBN', 'wp-review-publish'); ?><span style="color:red">*</span></td>
 			<td><input id="metadata-isbn" type="text" size="80" name="book_review_book_isbn"
 				value="<?php echo $book_isbn; ?>" /></td>
 		</tr>
 		<tr>
-			<td style="width: 100%">Teaser<span style="color:red">*</span></td>
+			<td style="width: 100%"><?php _e('Teaser', 'wp-review-publish'); ?><span style="color:red">*</span></td>
 			<td>
 				<textarea id="metadata-teaser" name="review_teaser" rows="5" cols="79"><?php echo $review_teaser; ?></textarea>
 			</td>
 		</tr>
 		<tr>
-			<td style="width: 100%">Målgruppe(r)<span style="color:red">*</span> for <em>anbefalingen</em>, ikke for boka:</td>
+			<td style="width: 100%"><?php _e('Målgruppe(r)<span style="color:red">*</span> for <em>anbefalingen</em>, ikke for boka:', 'wp-review-publish'); ?></td>
 			<td><div id="metadata-audience" style="border: 1px solid #dedede; padding: 4px">
 				<fieldset>
 					<input id="a1" <?php if ( preg_match("/barn/", $review_audience)) echo 'checked="checked"'; ?> class="audiences" name="audience[]" type="checkbox" value="barn">
-					<label for="a1" class="checklabel">barn</label>
+					<label for="a1" class="checklabel"><?php _e('barn', 'wp-review-publish'); ?></label>
 					<input id="a2" <?php if ( preg_match("/ungdom/", $review_audience)) echo 'checked="checked"'; ?>class="audiences" name="audience[]" type="checkbox" value="ungdom">
-					<label for="a2" class="checklabel">ungdom</label>
+					<label for="a2" class="checklabel"><?php _e('ungdom', 'wp-review-publish'); ?></label>
 					<input id="a3" <?php if ( preg_match("/voksen/", $review_audience)) echo 'checked="checked"'; ?>class="audiences" name="audience[]" type="checkbox" value="voksen">
-					<label for="a3" class="checklabel">voksen</label>
+					<label for="a3" class="checklabel"><?php _e('voksen', 'wp-review-publish'); ?></label>
 				</fieldset>
 				</div>
 			</td>
 		</tr>
 		<tr>
-			<td style="width: 100%">Anmelders epost<span style="color:red">*</span></td>
+			<td style="width: 100%"><?php _e('Anmelders epost<span style="color:red">*</span>', 'wp-review-publish'); ?></td>
 			<td><input id="metadata-email" type="text" size="80" name="review_reviewer_email"
 				value="<?php echo $review_reviewer_email; ?>" /></td>
 		</tr>
 		<tr>
-			<td style="width: 100%">Anmelders navn<span style="color:red">*</span></td>
+			<td style="width: 100%"><?php _e('Anmelders navn<span style="color:red">*</span>', 'wp-review-publish'); ?></td>
 			<td><input id="metadata-name" type="text" size="80" name="review_reviewer"
 				value="<?php echo $review_reviewer; ?>" /></td>
 		</tr>
 		<tr>
-			<td style="width: 100%">URI (fylles ut automatisk etter publisering)</td>
+			<td style="width: 100%"><?php _e('URI (fylles ut automatisk etter publisering)', 'wp-review-publish'); ?></td>
 			<td><input type="text" disabled="true" size="80" name="review_uri"
 				value="<?php echo $review_uri; ?>" /></td>
 		</tr>
@@ -164,7 +164,7 @@ if ( is_admin() && $post->post_type == 'book_reviews' ){
 				}
 				if ( !valid ) {
 					jQuery('.temp-error').remove();
-					jQuery('#publish').parent().parent().prepend("<div class='error temp-error'>Fyll ut alle obligatoriske felt!</div>");
+					jQuery('#publish').parent().parent().prepend("<div class='error temp-error'><?php _e('Fyll ut alle obligatoriske felt!', 'wp-review-publish'); ?></div>");
 					e.preventDefault();
 				}
 			});
@@ -245,10 +245,10 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 		$result = $request->request( $url,
 									 array( 'method' => 'POST', 'body' => $body ) );
 		if ( $result["response"]["code"] != 201 ) {
-			 $_SESSION['my_admin_notices'] .= '<div class="error"><p>Bokanbefaling push feilet fordi:</p><p>'. $result["body"] .'</p></div>';
+			 $_SESSION['my_admin_notices'] .= '<div class="error"><p>' . __('Bokanbefaling push feilet fordi:', 'wp-review-publish') . '</p><p>'. $result["body"] .'</p></div>';
 			 return false;
 		} else {
-			$_SESSION['my_admin_notices'] .= '<div class="updated"><p>Bokanbefaling pushet til anbefalinger.deichman.no</p></div>';
+			$_SESSION['my_admin_notices'] .= '<div class="updated"><p>' . __('Bokanbefaling pushet til anbefalinger.deichman.no', 'wp-review-publish') . '</p></div>';
 		}
 
 		$json = json_decode( $result["body"], true );
@@ -265,9 +265,9 @@ function process_book_review_fields( $book_review_id, $book_review ) {
 		$result = $request->request( $url,
 									 array( 'method' => 'PUT', 'body' => $body ) );
 		if ( $result["response"]["code"] != 200 ) {
-			$_SESSION['my_admin_notices'] .= '<div class="error"><p>Bokanbefaling opdatering feilet fordi:</p><p>'. $result["body"] .'</p></div>';
+			$_SESSION['my_admin_notices'] .= '<div class="error"><p>' . __('Bokanbefaling opdatering feilet fordi:', 'wp-review-publish') . '</p><p>'. $result["body"] .'</p></div>';
 		} else {
-			$_SESSION['my_admin_notices'] .= '<div class="updated"><p>Bokanbefaling oppdatert på anbefalinger.deichman.no</p></div>';
+			$_SESSION['my_admin_notices'] .= '<div class="updated"><p>' . __('Bokanbefaling oppdatert på anbefalinger.deichman.no', 'wp-review-publish') . '</p></div>';
 		}
 	}
 
@@ -295,9 +295,9 @@ function remove_rdf ( $id ) {
 	curl_close($ch);
 
 	if ( $result == FALSE ) {
-			$_SESSION['my_admin_notices'] .= '<div class="error"><p>Bokanbefaling sletting feilet fordi:</p><p>'. curl_error($ch) .'</p></div>';
+			$_SESSION['my_admin_notices'] .= '<div class="error"><p>' . __('Bokanbefaling sletting feilet fordi:', 'wp-review-publish') . '</p><p>'. curl_error($ch) .'</p></div>';
 		} else {
-			$_SESSION['my_admin_notices'] .= '<div class="updated"><p>Bokanbefaling fjernet fra anbefalinger.deichman.no</p></div>';
+			$_SESSION['my_admin_notices'] .= '<div class="updated"><p>' . __('Bokanbefaling fjernet fra anbefalinger.deichman.no', 'wp-review-publish') . '</p></div>';
 	}
 }
 
@@ -341,11 +341,11 @@ function book_reviews_config_page() {
 	$key = get_option( 'deichman_api_key' );
 	?>
 	<div id="deichman-general" class="wrap">
-		<h2>Bokanbefalinger konfigurasjon</h2>
+		<h2><?php _e('Bokanbefalinger konfigurasjon', 'wp-review-publish'); ?></h2>
 
 		<?php if ( isset( $_GET['message'] )
 		&& $_GET['message'] == '1' ) { ?>
-		<div id='message' class='updated fade'><p><strong>Endring lagret.</strong></p></div>
+		<div id='message' class='updated fade'><p><strong><?php _e('Endring lagret.', 'wp-review-publish'); ?></strong></p></div>
 		<?php } ?>
 
 		<form method="post" action="admin-post.php">
@@ -354,7 +354,7 @@ function book_reviews_config_page() {
 			API-nøkkel: <input type="text" name="deichman_api_key" value="<?php echo $key; ?>"/>
 			<input type="submit" value="Lagre" class="button-primary"/>
 		</form>
-		<p>Har du ikke API-nøkkel, får du denne ved å kontakte Deichmanske bibliotek</p>
+		<p><?php _e('Har du ikke API-nøkkel, får du denne ved å kontakte Deichmanske bibliotek', 'wp-review-publish'); ?></p>
 	</div>
 <?php
 }
@@ -373,7 +373,7 @@ function show_book_reviews_as_posts ( $query ) {
 }
 
 function my_columns( $columns ) {
-	$columns['author'] = 'Forfatter';
+	$columns['author'] = __('Forfatter', 'wp-review-publish');
 	unset( $columns['comments'] );
 	return $columns;
 }
